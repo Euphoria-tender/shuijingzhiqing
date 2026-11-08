@@ -94,24 +94,11 @@ flowchart TB
 
 ## 任务执行状态机
 
-```mermaid
-stateDiagram-v2
-    [*] --> Idle
-    Idle --> Locating: 收到开始信号
-    Locating --> Navigating: 位姿收敛（3 帧稳定）
-    Locating --> Navigating: 超时 5s → 里程计兜底
-    Navigating --> Aligning: 到达目标点 ±3cm
-    Navigating --> Aligning: 超时 20s → 原地重定位
-    Aligning --> Acting: 视觉误差 < 5mm
-    Aligning --> Acting: 超时 8s → 用配置默认位姿
-    Acting --> Speaking: 动作完成
-    Acting --> Recovery: 动作失败 / 超时
-    Speaking --> Idle: 播报结束
-    Recovery --> Idle: 回站姿，放弃该任务
-    Idle --> [*]: 裁判示意结束
-```
+八个状态：待机 → 定位 → 导航 → 对准 → 执行 → 播报，外加异常恢复与结束。每个状态都有明确的超时阈值，超时即降级，绝不静默等待。
 
-核心设计：异常恢复的默认动作是**放弃当前任务、转下一任务**，而不是重试。因为规则明确「任务无重试」，任何原地纠缠都在消耗不可回收的时间。
+最重要的设计是：**异常恢复的默认动作是「放弃当前任务、转下一任务」，而不是重试**。规则明确「任务无重试」，原地纠缠只会消耗不可回收的时间。
+
+完整状态图（含全部超时分支）与状态迁移表见 [执行手册](docs/03-执行手册.md)。
 
 ## 文档导航
 
@@ -122,6 +109,7 @@ stateDiagram-v2
 | [执行手册](docs/03-执行手册.md) | 秒级时间轴、状态机、语音额度记账表、四级降级预案 | 比赛现场必带 |
 | [分工与计划](docs/04-分工与计划.md) | 责任矩阵、交付物验收、倒排日历、团队级验收 | 全员 |
 | [风险与待确认](docs/05-风险与待确认.md) | 10 项风险登记、8 个必须问组委会的问题 | 队长 / 外联 |
+| [术语表](docs/06-术语表.md) | 赛题、定位、语音、控制、工程五类术语的落地解释 | 新队友 / 答辩前 |
 
 原始 Word 版（用于打印与提交）：[书境智擎-赛项11项目整体策划书.docx](docs/assets/书境智擎-赛项11项目整体策划书.docx)，与本仓库 Markdown 内容同源，以 Markdown 为准。
 
@@ -138,6 +126,7 @@ stateDiagram-v2
 今天距报名截止 7 天，且**复赛窗口与报名截止是同一天（11/15）开启**，不存在「报完名再准备」的余地。
 
 ```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#90CAF9','primaryBorderColor':'#1565C0','taskTextColor':'#0D47A1','taskTextOutsideColor':'#0D47A1','taskTextDarkColor':'#0D47A1','textColor':'#212121','titleColor':'#0D47A1'}}}%%
 gantt
     title 备赛倒排（2026-11-08 → 11-15）
     dateFormat YYYY-MM-DD
