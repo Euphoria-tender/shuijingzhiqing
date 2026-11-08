@@ -1,0 +1,40 @@
+# 构建产物与流水线中间件
+output/
+
+# 工作区数据
+.workbuddy/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# 模型与数据集（体积大，走网盘）
+models/
+datasets/
+*.onnx
+*.pt
+*.pth
+
+# 标定与录像（本地留存）
+*.mp4
+*.avi
+*.bag
+
+# 系统
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+
+# 临时
+*.log
+*.tmp
+~$*
